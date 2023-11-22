@@ -1,19 +1,36 @@
+import { Inter_400Regular, Inter_700Bold, useFonts } from '@expo-google-fonts/inter';
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet } from 'react-native';
+import { Loading } from './src/components/Loading';
+import { HomeScreen } from './src/screens';
+import { theme } from './src/theme';
 
 export default function App() {
+  let [fontsLoaded, fontError] = useFonts({
+    Inter_400Regular,
+    Inter_700Bold
+  });
+
+  if (!fontsLoaded && !fontError) {
+    return null;
+  }
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.tsx to start working on your app!</Text>
+    <>
+      {!fontsLoaded ? (
+        <HomeScreen />
+      ) : (
+        <Loading />
+      )}
       <StatusBar style="auto" />
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: theme.colors.base.gray600,
     alignItems: 'center',
     justifyContent: 'center',
   },
