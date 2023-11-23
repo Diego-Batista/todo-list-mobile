@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { FlatList, Text, View } from "react-native";
+import { Alert, FlatList, Text, View } from "react-native";
 import { Empty } from "../components/Empty";
 import { Header } from "../components/Header";
 import { Task } from "../components/Task";
@@ -27,11 +27,34 @@ export function HomeScreen() {
     ])
     const [newTask, setNewTask] = useState('')
 
+    const totalTasksCreated = tasks.length
+    const totalTasksCompleted = tasks.filter(({isCompleted}) => isCompleted).length
+
     function handleTaskAdd() {
         if(newTask !== '' && newTask.length >= 5) {
             setTasks(tasks => [...tasks, {id: uuid(), isCompleted: false, title: newTask.trim()}])
             setNewTask('')     
         }
+    }
+
+    // função para marcar e desmarcar todo
+    function handleTaskDone(id: string) {
+        setTasks((task) => task.map((task) => {task.id === id ? (task.isCompleted = !task.isCompleted) : null
+            return task}))
+    }
+
+    function handleTaskDelete(id: string) {
+        Alert.alert('Excluir tarefa', 'Deseja excluir essa tarefa?', [
+            {
+                text: 'Sim',
+                style: 'default',
+                onPress: () => setTasks((task) => task.filter((task) => task.id !== id))
+            },
+            {
+                text: 'Não',
+                style: 'cancel'
+            }
+        ])
     }
 
     return (
@@ -42,25 +65,26 @@ export function HomeScreen() {
                     <View style={style.row}>
                         <Text style={style.tasksCreated}>Criadas</Text>
                         <View style={style.counterContainer}>
-                            <Text style={style.counter}>0</Text>
+                            <Text style={style.counter}>{totalTasksCreated}</Text>
                         </View>
                     </View>
                     <View style={style.row}>
                         <Text style={style.tasksDone}>Concluidas</Text>
                         <View style={style.counterContainer}>
-                            <Text style={style.counter}>0</Text>
+                            <Text style={style.counter}>{totalTasksCompleted}</Text>
                         </View>
                     </View>
                 </View>
 
                 <FlatList 
                     data={tasks}
-                    keyExtractor={(tasks) => tasks.id!}
+                    keyExtractor={(tasks) => tasks.id}
                     renderItem={({item}) => (
                         <Task 
                             key={item.id}
-                            title={item.title}
-                            isCompleted={item.isCompleted}
+                            onTaskDone={() => handleTaskDone(item.id)}
+                            onTaskDeleted={() => handleTaskDelete(item.id)}
+                            {...item}
                         />
                     )}
                   ListEmptyComponent={<Empty />}
