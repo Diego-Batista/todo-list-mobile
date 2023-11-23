@@ -1,5 +1,6 @@
 import { Text, View } from "react-native";
 import { Header } from "../components/Header";
+import { Task } from "../components/Task";
 import { style } from "./styles";
 
 export function HomeScreen() {
@@ -21,6 +22,18 @@ export function HomeScreen() {
                         </View>
                     </View>
                 </View>
+                <Task 
+                    title="Estudar react-native"
+                    isCompleted={false}
+                />
+                <Task 
+                    title="Estudar reactJs"
+                    isCompleted
+                />
+                <Task 
+                    title="Estudar react-native"
+                    isCompleted={false}
+                />
             </View>
         </View>
     )
