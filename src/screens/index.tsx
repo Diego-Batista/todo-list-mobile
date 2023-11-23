@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Alert, FlatList, Text, View } from "react-native";
+import { useRef, useState } from "react";
+import { Alert, FlatList, Text, TextInput, View } from "react-native";
 import { Empty } from "../components/Empty";
 import { Header } from "../components/Header";
 import { Task } from "../components/Task";
@@ -26,6 +26,7 @@ export function HomeScreen() {
         },
     ])
     const [newTask, setNewTask] = useState('')
+    const newTaskInputRef = useRef<TextInput>(null)
 
     const totalTasksCreated = tasks.length
     const totalTasksCompleted = tasks.filter(({isCompleted}) => isCompleted).length
@@ -35,6 +36,8 @@ export function HomeScreen() {
             setTasks(tasks => [...tasks, {id: uuid(), isCompleted: false, title: newTask.trim()}])
             setNewTask('')     
         }
+
+        newTaskInputRef.current?.blur()
     }
 
     // função para marcar e desmarcar todo
@@ -59,7 +62,7 @@ export function HomeScreen() {
 
     return (
         <View style={style.container}>
-            <Header task={newTask} onChangeText={setNewTask} onPress={handleTaskAdd}/>
+            <Header inputRef={newTaskInputRef} task={newTask} onChangeText={setNewTask} onPress={handleTaskAdd}/>
             <View style={style.tasksContainer}>
                 <View style={style.info}>
                     <View style={style.row}>
